@@ -75,8 +75,16 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.room.runtime.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // Room
+    implementation("androidx.room:room-runtime:2.9.0")
+    implementation("androidx.room:room-paging:2.9.0")
+    ksp("androidx.room:room-compiler:2.9.0")
+    implementation("androidx.room:room-ktx:2.9.0")
 
 
     testImplementation(libs.junit)
