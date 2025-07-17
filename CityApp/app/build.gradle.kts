@@ -69,9 +69,12 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    // Pagging
+    implementation(libs.androidx.paging.common.android)
+    implementation(libs.androidx.paging.compose.android)
+
     // Hilt
     implementation(libs.hilt.android)
-    implementation(libs.androidx.paging.common.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 

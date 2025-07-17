@@ -52,6 +52,8 @@ import kotlin.collections.get
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CityListScreen(
+    onCityClick: (City) -> Unit,
+    onClickToDetails: (City) -> Unit,
     viewModel: CityListViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -62,19 +64,28 @@ fun CityListScreen(
         is LoadState.Error -> (cities.loadState.refresh as LoadState.Error).error.message
         else -> uiState.error
     }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val listState = rememberLazyListState()
+
+    val selectedCity by viewModel.selectedCity.collectAsStateWithLifecycle()
+
+    val onSelectedForCity = { city: City ->
+        viewModel.selectCity(city)
+        onCityClick(city)
+    }
+
+    val onSelectedForDetails = { city: City ->
+        viewModel.selectCity(city)
+        onClickToDetails(city)
+    }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Ciudades",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+            TopBar(
+                title = "CIUDADES",
+                onFavoriteClick = { viewModel.toggleFavoritesFilter() },
+                onBackClick = {},
+                isFavorite = uiState.showFavoritesOnly,
+                showFavorites = true,
+                showBackArrow = false,
             )
         }
     ) { padding ->
@@ -88,81 +99,33 @@ fun CityListScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                OutlinedTextField(
-                    value = uiState.searchQuery,
-                    onValueChange = viewModel::onSearchQueryChanged,
-                    modifier = modifier.testTag("searchTextField"),
-                    label = { Text("Buscar ciudades...") },
-                    placeholder = { Text("Buscar ciudades...") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Buscar"
-                        )
-                    },
-                    textStyle = androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Start),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(
-                        onSearch = { keyboardController?.hide() }
-                    ),
-                    singleLine = true
+                SearchBar(
+                    query = uiState.searchQuery,
+                    onQueryChange = viewModel::onSearchQueryChanged,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (isLoading && cities.itemCount == 0) {
                     Loading()
-                } else if (error == null && !isLoading && cities.itemCount == 0) {
+                } else if (error == null && !isLoading && uiState.showFavoritesOnly && cities.itemCount == 0) {
+                    Message("No hay ciudades favoritas")
+                } else if (error == null && !isLoading && !uiState.showFavoritesOnly && cities.itemCount == 0) {
                     Message("No hay ciudades disponibles")
                 } else if (error != null && cities.itemCount == 0) {
                     Message(message = error)
                 } else {
-                    LazyColumn(
-                        state = listState,
-                        modifier = modifier.fillMaxSize()
-                    ) {
-                        items(
-                            count = cities.itemCount,
-                            key = { index ->
-                                val city = cities.getOrNull(index)
-                                city?.id ?: index.toLong()
-                            }
-                        ) { index ->
-                            val city = cities[index]
-                            if (city != null) {
-                                Card(
-                                    modifier = modifier.padding(vertical = 4.dp).testTag("CityItem"),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Column(
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            Text(
-                                                text = "${city.name}, ${city.country}",
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                            Text(
-                                                text = "Lat: ${city.lat}, Lon: ${city.lon}",
-                                                style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Show loading indicator when loading more items
-                        if (cities.loadState.append is LoadState.Loading) {
-                            item { Loading() }
-                        }
-                    }
+                    CityList(
+                        cities = cities,
+                        selectedCityId = selectedCity?.id,
+                        onCityClick = onSelectedForCity,
+                        onClickToDetails = onSelectedForDetails,
+                        onToggleFavorite = { city ->
+                            viewModel.onFavoriteToggled(city)
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
