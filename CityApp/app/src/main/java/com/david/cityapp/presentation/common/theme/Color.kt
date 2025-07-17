@@ -1,4 +1,4 @@
-package com.david.cityapp.ui.theme
+package com.david.cityapp.presentation.common.theme
 
 import androidx.compose.ui.graphics.Color
 
