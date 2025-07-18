@@ -2,6 +2,8 @@ package com.david.cityapp.presentation.ui.screens.citylist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.david.cityapp.domain.model.City
 import com.david.cityapp.domain.repository.CityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,35 +26,47 @@ class CityListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
+    private val _showFavoritesOnly = MutableStateFlow(false)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
+    private val _selectedCity = MutableStateFlow<City?>(null)
     private val _hasData = MutableStateFlow<Boolean?>(null)
+    val selectedCity: StateFlow<City?> = _selectedCity.asStateFlow()
 
     val citiesFlow = combine(
         _searchQuery,
-    ) { query -> query
-    }.flatMapLatest { (query) ->
-        flowOf( repository.getCities(
+        _showFavoritesOnly
+    ) { query, showFavoritesOnly ->
+        Pair(query, showFavoritesOnly)
+    }.flatMapLatest { (query, showFavoritesOnly) ->
+        repository.getCities(
             query = query,
+            onlyFav = showFavoritesOnly,
             pageSize = 10
-        ))
+        )
     }.cachedIn(viewModelScope)
 
     val uiState: StateFlow<CityListUiState> = combine(
         _searchQuery,
+        _showFavoritesOnly,
         _isLoading,
         _error,
+        _selectedCity,
         citiesFlow
     ) { values ->
         val searchQuery = values[0] as String
+        val showFavoritesOnly = values[1] as Boolean
         val isLoading = values[2] as Boolean
         val error = values[3] as String?
-        val cities = values[5] as List<City>
+        val selectedCity = values[4] as City?
+        val cities = values[5] as PagingData<City>
 
         CityListUiState(
             searchQuery = searchQuery,
+            showFavoritesOnly = showFavoritesOnly,
             isLoading = isLoading,
             error = error,
+            selectedCity = selectedCity,
             cities = cities
         )
     }.stateIn(
@@ -70,6 +84,7 @@ class CityListViewModel @Inject constructor(
             try {
                 _isLoading.value = true
                 _hasData.value = true
+                repository.preloadCities()
             } catch (e: Exception) {
                 _error.value = "Error loading cities"
                 _hasData.value = false
@@ -81,5 +96,24 @@ class CityListViewModel @Inject constructor(
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
+    }
+
+    fun toggleFavoritesFilter() {
+        _showFavoritesOnly.value = !_showFavoritesOnly.value
+    }
+
+    fun onFavoriteToggled(city: City) {
+        viewModelScope.launch {
+            repository.toggleFavorite(city.id)
+            if (_selectedCity.value?.id == city.id) {
+                _selectedCity.value = _selectedCity.value?.copy(
+                    isFavorite = !city.isFavorite
+                )
+            }
+        }
+    }
+
+    fun selectCity(city: City?) {
+        _selectedCity.value = city
     }
 }
