@@ -84,6 +84,10 @@ dependencies {
     implementation(libs.androidx.room.paging)
     ksp(libs.androidx.room.compiler)
 
+    // Osmdroid maps
+    implementation(libs.osm.droid.android)
+    implementation(libs.osm.droid.mapsforge)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

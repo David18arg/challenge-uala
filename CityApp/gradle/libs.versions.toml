@@ -19,6 +19,7 @@ retrofit = "2.9.0"
 pagingCommonAndroid = "3.3.6"
 pagingComposeAndroid = "3.3.6"
 roomRuntime = "2.7.2"
+osmDroid = "6.1.16"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,8 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "pagingCommonAndroid" }
 androidx-paging-compose-android = { group = "androidx.paging", name = "paging-compose-android", version.ref = "pagingComposeAndroid" }
+osm-droid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmDroid" }
+osm-droid-mapsforge = { module = "org.osmdroid:osmdroid-mapsforge", version.ref = "osmDroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
