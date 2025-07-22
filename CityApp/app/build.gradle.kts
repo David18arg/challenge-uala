@@ -19,6 +19,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Weather API Key
+        buildConfigField("String", "WEATHER_API_KEY", "\"c02b1d22d453ef36d5705ff26a89c8ca\"")
     }
 
     buildTypes {

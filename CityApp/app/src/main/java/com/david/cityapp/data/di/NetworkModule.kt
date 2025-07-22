@@ -1,6 +1,7 @@
 package com.david.cityapp.data.di
 
 import com.david.cityapp.data.remote.CityApi
+import com.david.cityapp.data.remote.WeatherApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,11 +16,15 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class CitiesApi
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class WeathersApi
+
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val CITIES_BASE_URL =
-        "https://gist.githubusercontent.com/hernan-uala/dce8843a8edbe0b0018b32e137bc2b3a/raw/"
+    private const val CITIES_BASE_URL = "https://gist.githubusercontent.com/hernan-uala/dce8843a8edbe0b0018b32e137bc2b3a/raw/"
+    private const val WEATHER_BASE_URL = "https://api.openweathermap.org/"
 
     @CitiesApi
     @Provides
@@ -30,6 +35,20 @@ object NetworkModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(CITIES_BASE_URL)
+            .client(client)
+            .addConverterFactory(gsonConverterFactory)
+            .build()
+    }
+
+    @WeathersApi
+    @Provides
+    @Singleton
+    fun provideWeatherRetrofit(
+        client: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(WEATHER_BASE_URL)
             .client(client)
             .addConverterFactory(gsonConverterFactory)
             .build()
@@ -56,4 +75,10 @@ object NetworkModule {
     fun provideCityApi(
         @CitiesApi retrofit: Retrofit
     ): CityApi = retrofit.create(CityApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideWeatherApi(
+        @WeathersApi retrofit: Retrofit
+    ): WeatherApi = retrofit.create(WeatherApi::class.java)
 }
