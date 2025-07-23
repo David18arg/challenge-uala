@@ -30,6 +30,9 @@ robolectric = "4.12.1"
 roomRuntime = "2.7.2"
 osmDroid = "6.1.16"
 runner = "1.5.2"
+turbine = "1.1.0"
+uiTestAndroid = "1.8.3"
+uiTestJunit4Android = "1.8.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -74,6 +77,9 @@ androidx-paging-compose-android = { group = "androidx.paging", name = "paging-co
 osm-droid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmDroid" }
 osm-droid-mapsforge = { module = "org.osmdroid:osmdroid-mapsforge", version.ref = "osmDroid" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

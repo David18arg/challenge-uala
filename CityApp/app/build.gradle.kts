@@ -78,6 +78,8 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.ui.test.junit4.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
@@ -111,6 +113,7 @@ dependencies {
     testImplementation(libs.mockito.inline)
 
     testImplementation(libs.androidx.paging.testing)
+    testImplementation(libs.turbine)
 
     // Android instrumented tests
     androidTestImplementation(libs.androidx.espresso.core)
