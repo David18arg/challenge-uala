@@ -91,6 +91,32 @@ dependencies {
     implementation(libs.osm.droid.android)
     implementation(libs.osm.droid.mapsforge)
 
+    // Coil
+    implementation(libs.coil.compose)
+
+    // Unit testing
+    testImplementation(libs.robolectric)
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent.jvm)
+
+    // AndroidX Test
+    testImplementation(libs.core.ktx)
+    testImplementation(libs.androidx.runner)
+    testImplementation(libs.androidx.rules)
+
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Mockito
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.inline)
+
+    testImplementation(libs.androidx.paging.testing)
+
+    // Android instrumented tests
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -99,4 +125,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(kotlin("test"))
 }
