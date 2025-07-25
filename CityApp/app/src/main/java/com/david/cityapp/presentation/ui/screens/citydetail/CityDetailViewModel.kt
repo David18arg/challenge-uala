@@ -46,10 +46,10 @@ class CityDetailViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    _uiState.update { it.copy(error = "City not found", isLoading = false) }
+                    _uiState.update { it.copy(error = "Ciudad no encontrada", isLoading = false) }
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = "Error: ${e.message}", isLoading = false) }
+                _uiState.update { it.copy(error = "Error de conexion", isLoading = false) }
             }
         }
     }

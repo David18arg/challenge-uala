@@ -1,6 +1,5 @@
 package com.david.cityapp.data.repository
 
-import android.util.Log
 import com.david.cityapp.data.remote.WeatherApi
 import com.david.cityapp.domain.model.Weather
 import com.david.cityapp.domain.repository.WeatherRepository

@@ -1,10 +1,12 @@
 package com.david.cityapp.domain.model
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "cities"
+    tableName = "cities",
+    indices = [Index(value = ["name", "country"], unique = true)]
 )
 data class City(
     @PrimaryKey(autoGenerate = true)

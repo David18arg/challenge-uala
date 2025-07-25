@@ -5,6 +5,6 @@ enum class WeatherIcon(val url: String) {
     WIND(                        "https://images.icon-icons.com/758/PNG/32/wind_icon-icons.com_64274.png"),
     HUMIDITY(                "https://images.icon-icons.com/2441/PNG/32/humidity_weather_icon_148585.png"),
     VISIBILITY("https://images.icon-icons.com/1514/PNG/32/visibleeyevisibilityinterfacesymbol_105036.png"),
-    PRESSURE(                                 "https://images.icon-icons.com/37/PNG/32/pressure_3151.png"),
-    CLOUDS(              "https://images.icon-icons.com/37/PNG/32/clouds_theapplication_thetime_2882.png");
+    PRESSURE(                                 "https://images.icon-icons.com/38/PNG/32/pressure_4667.png"),
+    CLOUDS("https://images.icon-icons.com/571/PNG/32/clouds-outlined-weather-symbol_icon-icons.com_54695.png");
 }
