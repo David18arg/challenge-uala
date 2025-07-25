@@ -84,7 +84,6 @@ class CityListViewModel @Inject constructor(
             try {
                 _isLoading.value = true
                 _hasData.value = true
-                repository.preloadCities()
             } catch (e: Exception) {
                 _error.value = "Error loading cities"
                 _hasData.value = false

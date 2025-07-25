@@ -1,4 +1,4 @@
-package com.david.cityapp.presentation.navigation
+package com.david.cityapp.presentation.navigation.components
 
 import android.preference.PreferenceManager
 import androidx.core.content.edit

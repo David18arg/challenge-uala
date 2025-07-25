@@ -33,6 +33,7 @@ runner = "1.5.2"
 turbine = "1.1.0"
 uiTestAndroid = "1.8.3"
 uiTestJunit4Android = "1.8.3"
+lottieCompose = "6.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -80,6 +81,7 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

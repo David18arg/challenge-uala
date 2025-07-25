@@ -96,6 +96,9 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
+    // lottie
+    implementation(libs.lottie.compose)
+
     // Unit testing
     testImplementation(libs.robolectric)
     testImplementation(libs.mockk.android)
@@ -119,7 +122,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

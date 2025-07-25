@@ -1,5 +1,6 @@
 package com.david.cityapp.presentation.ui.main
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.david.cityapp.presentation.common.theme.CityAppTheme
 import com.david.cityapp.presentation.navigation.AppNavigation
+import com.david.cityapp.presentation.navigation.NavigationRoute
 import com.david.cityapp.presentation.ui.screens.citylist.CityListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     AppNavigation(
                         navController = rememberNavController(),
-                        startDestination = "cities",
+                        startDestination = NavigationRoute.Splash.route,
                         viewModel = viewModel<CityListViewModel>()
                     )
                 }

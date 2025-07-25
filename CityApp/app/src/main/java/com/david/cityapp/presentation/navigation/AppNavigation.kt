@@ -26,6 +26,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.david.cityapp.presentation.common.components.Message
+import com.david.cityapp.presentation.common.components.SplashLottie
+import com.david.cityapp.presentation.navigation.components.ScreenType
 import com.david.cityapp.presentation.ui.screens.citydetail.CityDetailScreen
 import com.david.cityapp.presentation.ui.screens.citylist.CityListScreen
 import com.david.cityapp.presentation.ui.screens.citylist.CityListViewModel
@@ -37,27 +39,42 @@ fun AppNavigation(
     startDestination: String = NavigationRoute.CityList.route,
     viewModel: CityListViewModel = hiltViewModel()
 ) {
+    // Maneja el estado de la orientación del dispositivo
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
 
-    // Track current screen type and city ID using rememberSaveable to survive configuration changes
+    // Estado para la pantalla actual y la ciudad seleccionada
     var currentScreen by rememberSaveable { mutableStateOf<ScreenType?>(null) }
     var currentCityId by rememberSaveable { mutableStateOf<Long?>(null) }
 
+    val selectedCity by viewModel.selectedCity.collectAsState()
+
+    // Actualiza la pantalla cuando se selecciona una ciudad
+    LaunchedEffect(selectedCity) {
+        selectedCity?.let { city ->
+            if (currentScreen == null || currentCityId == city.id) {
+                currentScreen = if (currentScreen == ScreenType.MAP) ScreenType.MAP else ScreenType.DETAIL
+                currentCityId = city.id
+            }
+        } ?: run {
+            currentScreen = ScreenType.LIST
+            currentCityId = null
+        }
+    }
+
+    // Vista en modo horizontal (pantalla dividida)
     if (isLandscape) {
-        // In landscape mode, show list on the left and map on the right
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Left side - City List (40% of screen)
+            // Panel izquierdo: Lista de ciudades
             Box(
                 modifier = Modifier
                     .weight(0.4f)
                     .fillMaxHeight()
             ) {
-                // Update selected city when it changes
                 LaunchedEffect(Unit) {
                     viewModel.selectedCity.collect { city ->
                         city?.let { currentCityId = it.id }
@@ -67,12 +84,10 @@ fun AppNavigation(
                 CityListScreen(
                     onCityClick = { city ->
                         currentScreen = ScreenType.MAP
-                        currentCityId = city.id
                         viewModel.selectCity(city)
                     },
                     onClickToDetails = { city ->
                         currentScreen = ScreenType.DETAIL
-                        currentCityId = city.id
                         viewModel.selectCity(city)
                     },
                     viewModel = viewModel,
@@ -82,19 +97,18 @@ fun AppNavigation(
                 )
             }
 
-            // Right side - Content (60% of screen)
+            // Panel derecho: Mapa o Detalle de la ciudad
             Box(
                 modifier = Modifier
                     .weight(0.6f)
                     .fillMaxHeight()
             ) {
-                val selectedCity by viewModel.selectedCity.collectAsState()
 
                 when {
                     currentScreen == ScreenType.DETAIL -> {
                         // Vista de detalle
                         CityDetailScreen(
-                            cityId = selectedCity?.id ?: 0,
+                            cityId = currentCityId?: 0,
                             onBackClick = { },
                             modifier = Modifier
                                 .fillMaxSize()
@@ -103,7 +117,7 @@ fun AppNavigation(
                     }
                     currentScreen == ScreenType.MAP -> {
                         CityMapScreen(
-                            cityId = selectedCity?.id ?: 0,
+                            cityId = currentCityId?: 0,
                             onBackClick = { },
                             modifier = Modifier
                                 .fillMaxSize()
@@ -117,7 +131,7 @@ fun AppNavigation(
             }
         }
     } else {
-        // En vista vertical se muestra el modo de navegación tradicional
+        // Navegación estándar en modo vertical
         NavHost(
             navController = navController,
             startDestination = NavigationRoute.Splash.route,
@@ -142,6 +156,10 @@ fun AppNavigation(
                         }
                     }
                 }
+                SplashLottie(
+                    onFinished = { },
+                    duration = if (isPreloading) null else 1000L
+                )
             }
             composable(NavigationRoute.CityList.route) {
                 LaunchedEffect(Unit) {
@@ -150,10 +168,12 @@ fun AppNavigation(
                 CityListScreen(
                     onCityClick = { city ->
                         currentScreen = ScreenType.MAP
+                        currentCityId = city.id
                         navController.navigate(NavigationRoute.CityMap.createRoute(city.id))
                     },
                     onClickToDetails = { city ->
                         currentScreen = ScreenType.DETAIL
+                        currentCityId = city.id
                         navController.navigate(NavigationRoute.CityDetail.createRoute(city.id))
                     },
                     viewModel = viewModel,
