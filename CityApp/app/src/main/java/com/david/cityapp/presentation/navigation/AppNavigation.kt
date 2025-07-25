@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.david.cityapp.presentation.common.components.Message
+import com.david.cityapp.presentation.ui.screens.citydetail.CityDetailScreen
 import com.david.cityapp.presentation.ui.screens.citylist.CityListScreen
 import com.david.cityapp.presentation.ui.screens.citylist.CityListViewModel
 import com.david.cityapp.presentation.ui.screens.citymap.CityMapScreen
@@ -92,6 +93,13 @@ fun AppNavigation(
                 when {
                     currentScreen == ScreenType.DETAIL -> {
                         // Vista de detalle
+                        CityDetailScreen(
+                            cityId = selectedCity?.id ?: 0,
+                            onBackClick = { },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start = 4.dp)
+                        )
                     }
                     currentScreen == ScreenType.MAP -> {
                         CityMapScreen(
@@ -180,6 +188,11 @@ fun AppNavigation(
                 val cityId = backStackEntry.arguments?.getLong("cityId") ?: return@composable
                 currentCityId = cityId
                 // Navegacion a details
+                CityDetailScreen(
+                    cityId = cityId,
+                    onBackClick = { navController.navigateUp() },
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
