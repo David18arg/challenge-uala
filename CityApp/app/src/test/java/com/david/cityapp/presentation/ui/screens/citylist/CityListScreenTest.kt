@@ -1,5 +1,6 @@
 package com.david.cityapp.presentation.ui.screens.citylist
 
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -81,7 +82,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = {},
                     onClickToDetails = {},
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -114,7 +116,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = {},
                     onClickToDetails = {},
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -153,7 +156,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = {},
                     onClickToDetails = {},
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -208,7 +212,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = {},
                     onClickToDetails = {},
-                    viewModel = mockViewModel
+                    viewModel = mockViewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -253,7 +258,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = {},
                     onClickToDetails = {},
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -312,7 +318,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = {},
                     onClickToDetails = {},
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -358,7 +365,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = { (City) -> Unit },
                     onClickToDetails = {},
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -397,7 +405,8 @@ class CityListScreenTest {
                 CityListScreen(
                     onCityClick = { },
                     onClickToDetails = { (City) -> Unit },
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    modifier = Modifier
                 )
             }
         }
@@ -421,7 +430,8 @@ class CityListScreenTest {
             CityListScreen(
                 onCityClick = {},
                 onClickToDetails = {},
-                viewModel = viewModel
+                viewModel = viewModel,
+                modifier = Modifier
             )
         }
 

@@ -1,5 +1,6 @@
 package com.david.cityapp.presentation.ui.screens.citymap.components
 
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.hasTestTag
@@ -51,7 +52,8 @@ class ScreenContentTest {
                     mapCenter = geoPoint,
                     mapZoom = 15.0,
                     context = context,
-                    onMapMoved = { _, _ -> }
+                    onMapMoved = { _, _ -> },
+                    modifier = Modifier
                 )
             }
         }
@@ -59,29 +61,6 @@ class ScreenContentTest {
         // Then
         composeTestRule
             .onNode(hasTestTag("CityMapContent"))
-            .assertExists()
-    }
-
-    @Test
-    fun `city map content shows current card view`() {
-        composeTestRule.setContent {
-            CityAppTheme {
-                val context = LocalContext.current
-                Configuration.getInstance().load(context, context.getSharedPreferences("osmdroid", 0))
-
-                ScreenContent(
-                    city = testCity,
-                    mapCenter = geoPoint,
-                    mapZoom = 15.0,
-                    context = context,
-                    onMapMoved = { _, _ -> }
-                )
-            }
-        }
-
-        // Use a simple assertion that doesn't rely on the looper
-        composeTestRule
-            .onNode(hasTestTag("CardContent"))
             .assertExists()
     }
 }

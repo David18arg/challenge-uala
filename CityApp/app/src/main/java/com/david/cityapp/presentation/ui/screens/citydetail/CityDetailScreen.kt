@@ -7,7 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.david.cityapp.presentation.common.components.Loading
 import com.david.cityapp.presentation.common.components.Message
@@ -19,37 +19,32 @@ fun CityDetailScreen(
     cityId: Long,
     onBackClick: () -> Unit,
     viewModel: CityDetailViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    isLandscape: Boolean
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
 
     LaunchedEffect(cityId) {
         viewModel.loadCity(cityId)
     }
 
-    if (uiState.isLoading && uiState.weather == null) {
-        Loading()
-    } else if (uiState.error != null) {
-        Message(uiState.error.toString())
-    } else {
+    if (uiState.isLoading && uiState.weather == null) Loading()
+    else if (uiState.error != null) Message(uiState.error.toString())
+    else {
         uiState.weather?.let { weather ->
             Scaffold(
-                topBar = {
+                topBar = { if (!isLandscape)
                     TopBar(
                         title = "${uiState.city?.name}, ${uiState.city?.country}",
                         onFavoriteClick = { },
                         onBackClick = onBackClick,
                         isFavorite = false,
                         showFavorites = false,
-                        showBackArrow = !isLandscape
                     )
                 }
             ) { padding ->
                 ScreenContent(
                     weather = weather,
-                    modifier = Modifier.padding(padding)
+                    modifier = Modifier.padding(top = if (isLandscape) 8.dp else 100.dp)
                 )
             }
         } ?: Message("No weather data available")

@@ -1,6 +1,7 @@
 package com.david.cityapp.presentation.ui.screens.citylist.components
 
 import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -43,7 +44,8 @@ class CityItemTest {
                         city = testCity,
                         onToggleFavorite = {},
                         onClick = {},
-                        onClickToDetails = {}
+                        onClickToDetails = {},
+                        modifier = Modifier
                     )
                 }
             }
@@ -62,7 +64,8 @@ class CityItemTest {
                         city = testCity,
                         onToggleFavorite = {},
                         onClick = {},
-                        onClickToDetails = {}
+                        onClickToDetails = {},
+                        modifier = Modifier
                     )
                 }
             }
@@ -83,7 +86,8 @@ class CityItemTest {
                         city = testCity,
                         onToggleFavorite = {},
                         onClick = { clickedCity = it },
-                        onClickToDetails = {}
+                        onClickToDetails = {},
+                        modifier = Modifier
                     )
                 }
             }
@@ -107,7 +111,8 @@ class CityItemTest {
                         city = testCity,
                         onToggleFavorite = { favoriteToggled = true },
                         onClick = {},
-                        onClickToDetails = {}
+                        onClickToDetails = {},
+                        modifier = Modifier
                     )
                 }
             }
@@ -131,7 +136,8 @@ class CityItemTest {
                         city = testCity,
                         onToggleFavorite = {},
                         onClick = {},
-                        onClickToDetails = { detailsClicked = true }
+                        onClickToDetails = { detailsClicked = true },
+                        modifier = Modifier
                     )
                 }
             }
@@ -155,7 +161,8 @@ class CityItemTest {
                         city = favoritedCity,
                         onToggleFavorite = {},
                         onClick = {},
-                        onClickToDetails = {}
+                        onClickToDetails = {},
+                        modifier = Modifier
                     )
                 }
             }

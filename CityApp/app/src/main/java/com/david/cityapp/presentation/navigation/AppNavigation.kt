@@ -36,182 +36,105 @@ import com.david.cityapp.presentation.ui.screens.citymap.CityMapScreen
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    startDestination: String = NavigationRoute.CityList.route,
+    startDestination: String,
     viewModel: CityListViewModel = hiltViewModel()
 ) {
-    // Maneja el estado de la orientación del dispositivo
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
 
-    // Estado para la pantalla actual y la ciudad seleccionada
-    var currentScreen by rememberSaveable { mutableStateOf<ScreenType?>(null) }
-    var currentCityId by rememberSaveable { mutableStateOf<Long?>(null) }
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
+    ) {
+        // Splash Screen
+        composable(NavigationRoute.Splash.route) {
+            var isPreloading by remember { mutableStateOf(true) }
+            val context = LocalContext.current
 
-    val selectedCity by viewModel.selectedCity.collectAsState()
+            val appNavigationHelper = hiltViewModel<AppNavigationViewModel>().appNavigationHelper
 
-    // Actualiza la pantalla cuando se selecciona una ciudad
-    LaunchedEffect(selectedCity) {
-        selectedCity?.let { city ->
-            if (currentScreen == null || currentCityId == city.id) {
-                currentScreen = if (currentScreen == ScreenType.MAP) ScreenType.MAP else ScreenType.DETAIL
-                currentCityId = city.id
+            LaunchedEffect(Unit) {
+                appNavigationHelper.preloadCitiesIfNeeded(context)
+                isPreloading = false
             }
-        } ?: run {
-            currentScreen = ScreenType.LIST
-            currentCityId = null
-        }
-    }
 
-    // Vista en modo horizontal (pantalla dividida)
-    if (isLandscape) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            // Panel izquierdo: Lista de ciudades
-            Box(
-                modifier = Modifier
-                    .weight(0.4f)
-                    .fillMaxHeight()
-            ) {
+            if (!isPreloading) {
                 LaunchedEffect(Unit) {
-                    viewModel.selectedCity.collect { city ->
-                        city?.let { currentCityId = it.id }
+                    navController.navigate(NavigationRoute.CityList.route) {
+                        popUpTo(NavigationRoute.Splash.route) { inclusive = true }
                     }
                 }
+            }
+            SplashLottie(
+                onFinished = { },
+                duration = if (isPreloading) null else 1000L
+            )
+        }
+        composable(NavigationRoute.CityList.route) {
+            CityListScreen(
+                onCityClick = { city ->
+                    navController.navigate(NavigationRoute.CityMap.createRoute(city.id))
+                },
+                onClickToDetails = { city ->
+                    navController.navigate(NavigationRoute.CityDetail.createRoute(city.id))
+                },
+                viewModel = viewModel,
+                isLandscape = isLandscape,
+                modifier = Modifier
+            )
+        }
 
+        composable(
+            route = NavigationRoute.CityMap.route,
+            arguments = listOf(navArgument("cityId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val cityId = backStackEntry.arguments?.getLong("cityId") ?: return@composable
+            if (isLandscape) {
                 CityListScreen(
                     onCityClick = { city ->
-                        currentScreen = ScreenType.MAP
-                        viewModel.selectCity(city)
-                    },
-                    onClickToDetails = { city ->
-                        currentScreen = ScreenType.DETAIL
-                        viewModel.selectCity(city)
-                    },
-                    viewModel = viewModel,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(end = 4.dp)
-                )
-            }
-
-            // Panel derecho: Mapa o Detalle de la ciudad
-            Box(
-                modifier = Modifier
-                    .weight(0.6f)
-                    .fillMaxHeight()
-            ) {
-
-                when {
-                    currentScreen == ScreenType.DETAIL -> {
-                        // Vista de detalle
-                        CityDetailScreen(
-                            cityId = currentCityId?: 0,
-                            onBackClick = { },
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(start = 4.dp)
-                        )
-                    }
-                    currentScreen == ScreenType.MAP -> {
-                        CityMapScreen(
-                            cityId = currentCityId?: 0,
-                            onBackClick = { },
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(start = 4.dp)
-                        )
-                    }
-                    else -> {
-                        Message("Selecciona una ciudad para ver el mapa")
-                    }
-                }
-            }
-        }
-    } else {
-        // Navegación estándar en modo vertical
-        NavHost(
-            navController = navController,
-            startDestination = NavigationRoute.Splash.route,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            // Splash Screen
-            composable(NavigationRoute.Splash.route) {
-                var isPreloading by remember { mutableStateOf(true) }
-                val context = LocalContext.current
-
-                val appNavigationHelper = hiltViewModel<AppNavigationViewModel>().appNavigationHelper
-
-                LaunchedEffect(Unit) {
-                    appNavigationHelper.preloadCitiesIfNeeded(context)
-                    isPreloading = false
-                }
-
-                if (!isPreloading) {
-                    LaunchedEffect(Unit) {
-                        navController.navigate(NavigationRoute.CityList.route) {
-                            popUpTo(NavigationRoute.Splash.route) { inclusive = true }
-                        }
-                    }
-                }
-                SplashLottie(
-                    onFinished = { },
-                    duration = if (isPreloading) null else 1000L
-                )
-            }
-            composable(NavigationRoute.CityList.route) {
-                LaunchedEffect(Unit) {
-                    currentScreen = ScreenType.LIST
-                }
-                CityListScreen(
-                    onCityClick = { city ->
-                        currentScreen = ScreenType.MAP
-                        currentCityId = city.id
                         navController.navigate(NavigationRoute.CityMap.createRoute(city.id))
                     },
                     onClickToDetails = { city ->
-                        currentScreen = ScreenType.DETAIL
-                        currentCityId = city.id
                         navController.navigate(NavigationRoute.CityDetail.createRoute(city.id))
                     },
                     viewModel = viewModel,
-                    modifier = Modifier.fillMaxSize()
+                    isLandscape = isLandscape,
+                    modifier = Modifier
                 )
-            }
-
-            composable(
-                route = NavigationRoute.CityMap.route,
-                arguments = listOf(navArgument("cityId") { type = NavType.LongType })
-            ) { backStackEntry ->
-                LaunchedEffect(Unit) {
-                    currentScreen = ScreenType.MAP
-                }
-                val cityId = backStackEntry.arguments?.getLong("cityId") ?: return@composable
-                currentCityId = cityId
+            } else {
                 CityMapScreen(
                     cityId = cityId,
-                    onBackClick = { navController.navigateUp() }
+                    onBackClick = { navController.navigate(NavigationRoute.CityList.route) },
+                    isLandscape = isLandscape,
                 )
             }
+        }
 
-            composable(
-                route = NavigationRoute.CityDetail.route,
-                arguments = listOf(
-                    navArgument("cityId") { type = NavType.LongType }
+        composable(
+            route = NavigationRoute.CityDetail.route,
+            arguments = listOf(
+                navArgument("cityId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val cityId = backStackEntry.arguments?.getLong("cityId") ?: return@composable
+            if (isLandscape) {
+                CityListScreen(
+                    onCityClick = { city ->
+                        navController.navigate(NavigationRoute.CityMap.createRoute(city.id))
+                    },
+                    onClickToDetails = { city ->
+                        navController.navigate(NavigationRoute.CityDetail.createRoute(city.id))
+                    },
+                    viewModel = viewModel,
+                    isLandscape = isLandscape,
+                    modifier = Modifier
                 )
-            ) { backStackEntry ->
-                LaunchedEffect(Unit) {
-                    currentScreen = ScreenType.DETAIL
-                }
-                val cityId = backStackEntry.arguments?.getLong("cityId") ?: return@composable
-                currentCityId = cityId
-                // Navegacion a details
+            } else {
                 CityDetailScreen(
                     cityId = cityId,
-                    onBackClick = { navController.navigateUp() },
-                    modifier = Modifier.fillMaxSize()
+                    onBackClick = { navController.navigate(NavigationRoute.CityList.route) },
+                    isLandscape = isLandscape,
                 )
             }
         }

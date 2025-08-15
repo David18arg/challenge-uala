@@ -1,10 +1,8 @@
 package com.david.cityapp.presentation.ui.screens.citymap.components
 
-import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -25,22 +23,21 @@ fun ScreenContent(
     mapCenter: GeoPoint,
     mapZoom: Double,
     onMapMoved: (GeoPoint, Double) -> Unit,
-    context: Context,
-    modifier: Modifier = Modifier.testTag("CityMapContent")
+    isLandscape: Boolean
 ) {
     val context = LocalContext.current
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
+            .padding(top = if (isLandscape) 4.dp else 88.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .weight(1f)
-                .padding(16.dp)
-                .testTag("CardContent"),
+                .testTag("CityMapContent"),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             AndroidView(

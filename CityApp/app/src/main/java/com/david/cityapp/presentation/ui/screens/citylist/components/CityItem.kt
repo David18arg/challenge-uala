@@ -30,7 +30,7 @@ fun CityItem(
     onClick: (City) -> Unit,
     onClickToDetails: (City) -> Unit,
     onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
     val backgroundColor = if (isSelected) {
         MaterialTheme.colorScheme.secondaryContainer

@@ -14,14 +14,12 @@ import com.david.cityapp.domain.model.Weather
 @Composable
 fun ScreenContent(
     weather: Weather? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
-    val scrollState = rememberScrollState()
-
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .verticalScroll(rememberScrollState())
     ) {
         weather?.let {
             MainCard(weather = it)

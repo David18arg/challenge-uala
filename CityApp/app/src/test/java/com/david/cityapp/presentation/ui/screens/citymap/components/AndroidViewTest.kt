@@ -3,6 +3,7 @@ package com.david.cityapp.presentation.ui.screens.citymap.components
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
@@ -62,7 +63,8 @@ class AndroidViewTest {
                     mapCenter = testGeoPoint,
                     mapZoom = 15.0,
                     context = context,
-                    onMapMoved = { _, _ -> }
+                    onMapMoved = { _, _ -> },
+                    modifier = Modifier
                 )
             }
         }

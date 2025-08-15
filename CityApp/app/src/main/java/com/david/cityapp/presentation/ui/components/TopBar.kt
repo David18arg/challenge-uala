@@ -2,6 +2,7 @@ package com.david.cityapp.presentation.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
@@ -16,37 +17,50 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.david.cityapp.presentation.navigation.components.ScreenType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     title: String,
+    subtitle: String? = null,
     onFavoriteClick: () -> Unit,
     onBackClick: () -> Unit,
     isFavorite: Boolean = false,
-    showFavorites: Boolean = true,
-    showBackArrow: Boolean = false
+    showFavorites: Boolean = true
 ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.screenWidthDp > configuration.screenHeightDp
     TopAppBar(
         title = {
-            Text(
-                text = title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row {
+                Text(
+                    text = title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(0.45f)
+                )
+                if (isLandscape && subtitle != null) {
+                    Text(
+                        text = subtitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(0.55f)
+                    )
+                }
+            }
         },
         navigationIcon = {
-            if (showBackArrow) IconButton(onClick = onBackClick) {
+            if (title != "CIUDADES") IconButton(onClick = onBackClick) {
                 Icon(Icons.Default.ArrowBack, "Back")
             }
         },
         actions = {
             if (showFavorites) {
                 Column(
-                    modifier = Modifier.wrapContentWidth(),
-                    verticalArrangement = Arrangement.Center
                 ) {
                     IconButton(onClick = { onFavoriteClick() }) {
                         Icon(
@@ -64,6 +78,7 @@ fun TopBar(
                     )
                 }
             }
-        }
+        },
+        modifier = Modifier.padding(0.dp)
     )
 }

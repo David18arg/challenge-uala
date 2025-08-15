@@ -25,12 +25,12 @@ fun InfoCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(vertical = 8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(horizontal = 26.dp, vertical = 26.dp)
+            modifier = modifier.padding( 26.dp)
         ) {
             Text(
                 "Detalles del clima",

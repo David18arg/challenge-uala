@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.david.cityapp.domain.model.City
 import com.david.cityapp.domain.repository.CityRepository
+import com.david.cityapp.presentation.navigation.components.ScreenType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,8 +30,10 @@ class CityListViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
     private val _selectedCity = MutableStateFlow<City?>(null)
+    private val _selectedScreenType = MutableStateFlow<ScreenType?>(null)
     private val _hasData = MutableStateFlow<Boolean?>(null)
     val selectedCity: StateFlow<City?> = _selectedCity.asStateFlow()
+    val selectedScreenType: StateFlow<ScreenType?> = _selectedScreenType.asStateFlow()
 
     val citiesFlow = combine(
         _searchQuery,
@@ -52,6 +54,7 @@ class CityListViewModel @Inject constructor(
         _isLoading,
         _error,
         _selectedCity,
+        _selectedScreenType,
         citiesFlow
     ) { values ->
         val searchQuery = values[0] as String
@@ -59,7 +62,8 @@ class CityListViewModel @Inject constructor(
         val isLoading = values[2] as Boolean
         val error = values[3] as String?
         val selectedCity = values[4] as City?
-        val cities = values[5] as PagingData<City>
+        val selectedScreenType = values[5] as ScreenType?
+        val cities = values[6] as PagingData<City>
 
         CityListUiState(
             searchQuery = searchQuery,
@@ -67,6 +71,7 @@ class CityListViewModel @Inject constructor(
             isLoading = isLoading,
             error = error,
             selectedCity = selectedCity,
+            selectedScreenType = selectedScreenType,
             cities = cities
         )
     }.stateIn(
@@ -114,5 +119,9 @@ class CityListViewModel @Inject constructor(
 
     fun selectCity(city: City?) {
         _selectedCity.value = city
+    }
+
+    fun selectScreenType(screenType: ScreenType?) {
+        _selectedScreenType.value = screenType
     }
 }
